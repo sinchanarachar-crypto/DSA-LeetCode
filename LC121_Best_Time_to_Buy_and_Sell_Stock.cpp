@@ -1,7 +1,7 @@
-class Solution 
+class Solution
 {
 public:
-    int maxProfit(vector<int>& prices) 
+    int maxProfit(vector<int>& prices)
     {
         int MinPrice = INT_MAX;
         int profit = 0;
@@ -16,7 +16,7 @@ public:
 
 
     /*{
-        int profit = 0; 
+        int profit = 0;
         int n = prices.size();
 
         for (int i = 0; i < n; i++)
