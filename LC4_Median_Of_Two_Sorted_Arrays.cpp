@@ -8,8 +8,8 @@ public:
 
         int n = merged_arr.size();
         
-        if (n % 2 != 0) 
-        {        
+        if (n % 2 != 0)
+        {
         return merged_arr[n / 2];
         }
     return (merged_arr[n/2 - 1] + merged_arr[n/2]) / 2.0;
