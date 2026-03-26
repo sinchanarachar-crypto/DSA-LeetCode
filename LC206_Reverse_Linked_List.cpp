@@ -23,7 +23,7 @@ public:
             prev = curr;                      //advance prev
             curr = nextNode;                  //advance curr
         }
-        return prev;                          //New head 
+        return prev;                          //New head
     }
 
     /*{
