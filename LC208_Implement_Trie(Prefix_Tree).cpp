@@ -49,7 +49,7 @@ public:
                 return false;
             node = node -> children[idx];
         }
-        return true;        
+        return true;
     }
 };
 
