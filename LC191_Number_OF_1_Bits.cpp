@@ -26,5 +26,5 @@ public:
             n >>= 1;
         }
         return count;
-    }*/   
+    }*/
 };
