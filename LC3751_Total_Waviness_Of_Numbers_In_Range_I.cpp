@@ -28,7 +28,7 @@ public:
         int count = 0;
         for(int i = num1; i <= num2; i++)
             count += isWave(i);
-        return count;    
+        return count;
     }*/
 
     int isWave(int n)
@@ -54,6 +54,6 @@ public:
         int count = 0;
         for(int i = num1; i <= num2; i++)
             count += isWave(i);
-        return count;    
+        return count;
     }
 };
