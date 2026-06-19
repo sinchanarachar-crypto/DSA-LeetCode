@@ -42,7 +42,8 @@ public:
             auto [val, l, r] = pq.top();
             pq.pop();
             ans += val;
-            if (r > l) {
+            if (r > l)
+            {
                 pq.emplace(queryMax(l, r - 1) - queryMin(l, r - 1), l, r - 1);
             }
         }
