@@ -1,127 +1,111 @@
 class Solution
 {
-    static const int MOD = 1e9 + 7;
-    static const int LOG = 18;
+public:
+    int M = 1e9+7;
+    int n, cols;
 
-    vector<vector<int>> adj;
+    unordered_map<int, vector<int>> adj; // Adjecency List
+    vector<vector<int>> ancestorTable;
     vector<int> depth;
-    vector<vector<int>> up;
 
-    void dfs(int node, int parent)
+    void dfs(int root, int parent)
     {
-        up[node][0] = parent;
+        ancestorTable[root][0] = parent;
 
-        for(int j = 1; j < LOG; j++)
+        for(int &ngbr : adj[root])
         {
-            if(up[node][j - 1] != -1)
-                up[node][j] =
-                    up[up[node][j - 1]][j - 1];
-            else
-                up[node][j] = -1;
-        }
+            if(ngbr == parent) continue;
 
-        for(int nxt : adj[node])
-        {
-            if(nxt == parent)
-                continue;
+            depth[ngbr] = depth[root] + 1;
 
-            depth[nxt] = depth[node] + 1;
-            dfs(nxt, node);
+            dfs(ngbr, root);
         }
     }
 
-    int lca(int u, int v)
+    void buildAncestorTable()
+    {
+        for(int j = 1; j < cols; j++)
+        {
+            for(int node = 0; node < n; node++)
+            {
+                if(ancestorTable[node][j - 1] != -1)
+                    ancestorTable[node][j] = ancestorTable[ancestorTable[node][j - 1]][j - 1];
+            }
+        }
+    }
+
+    int findLCA(int u, int v)
     {
         if(depth[u] < depth[v])
             swap(u, v);
 
-        int diff = depth[u] - depth[v];
+        int k = depth[u] - depth[v];
 
-        for(int j = LOG - 1; j >= 0; j--)
+        for(int j = 0; j < cols; j++)
         {
-            if(diff & (1 << j))
-                u = up[u][j];
+            if(k & (1 << j))
+                u = ancestorTable[u][j];
         }
 
-        if(u == v)
+        if(u == v) // both on same path
             return u;
 
-        for(int j = LOG - 1; j >= 0; j--)
+        for(int j = cols - 1; j >= 0; j--)
         {
-            if(up[u][j] != up[v][j])
+            if(ancestorTable[u][j] == -1) continue;
+
+            if(ancestorTable[u][j] != ancestorTable[v][j])
             {
-                u = up[u][j];
-                v = up[v][j];
+                u = ancestorTable[u][j];
+                v = ancestorTable[v][j];
             }
         }
-
-        return up[u][0];
+        return ancestorTable[u][0];
     }
 
-    long long modPow(long long a, long long b)
+    vector<int> assignEdgeWeights(vector<vector<int>>& edges, vector<vector<int>>& queries)
     {
-        long long res = 1;
+        n = edges.size() + 1;
+        cols = log2(n) + 1;
 
-        while(b)
+        for(auto &edge : edges)
         {
-            if(b & 1)
-                res = (res * a) % MOD;
-
-            a = (a * a) % MOD;
-            b >>= 1;
-        }
-
-        return res;
-    }
-
-public:
-
-    vector<int> assignEdgeWeights(
-        vector<vector<int>>& edges,
-        vector<vector<int>>& queries)
-    {
-        int n = edges.size() + 1;
-
-        adj.assign(n + 1, {});
-        depth.assign(n + 1, 0);
-        up.assign(n + 1, vector<int>(LOG, -1));
-
-        for(auto &e : edges)
-        {
-            int u = e[0];
-            int v = e[1];
+            int u = edge[0] - 1;
+            int v = edge[1] - 1;
 
             adj[u].push_back(v);
             adj[v].push_back(u);
         }
 
-        dfs(1, -1);
+        depth.resize(n, 0);
+        ancestorTable.resize(n, vector<int>(cols, -1));
 
-        vector<int> answer;
+        dfs(0, -1);
+        buildAncestorTable();
 
-        for(auto &q : queries)
+        // Precompute power of 2
+        vector<int> pow2(n + 1);
+        pow2[0] = 1;
+        for(int i = 1; i <= n; i++)
+            pow2[i] = (2LL * pow2[i - 1]) % M;
+
+        vector<int> result;
+
+        for(auto &query : queries)
         {
-            int u = q[0];
-            int v = q[1];
+            int u = query[0] - 1;
+            int v = query[1] - 1;
 
-            int ancestor = lca(u, v);
+            int lca = findLCA(u, v);
+            int d = depth[u] + depth[v] - 2*depth[lca];
 
-            long long dist =
-                depth[u]
-                + depth[v]
-                - 2LL * depth[ancestor];
+            if(d == 0)
+                result.push_back(0);
 
-            if(dist == 0)
-            {
-                answer.push_back(0);
-                continue;
-            }
-
-            answer.push_back(
-                (int)modPow(2, dist - 1)
-            );
+            else
+                result.push_back(pow2[d - 1]);
         }
 
-        return answer;
+        return result;
     }
 };
