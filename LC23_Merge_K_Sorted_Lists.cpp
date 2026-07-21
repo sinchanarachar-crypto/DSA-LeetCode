@@ -11,32 +11,45 @@
 class Solution
 {
 public:
-    ListNode* mergeKLists(vector<ListNode*>& lists)
+
+    ListNode* mergeTwoList(ListNode* l1, ListNode* l2)
     {
-        auto cmp = [](ListNode* a, ListNode* b)
+        if(l1 == NULL) return l2;
+        if(l2 == NULL) return l1;
+
+        if(l1 -> val <= l2 -> val)
         {
-            return a -> val > b -> val;
-        };
-        priority_queue<ListNode*, vector<ListNode*>, decltype(cmp)> pq(cmp);
-
-        for (ListNode* node : lists)
-            if (node)
-                pq.push(node);
-
-        ListNode dummy(0);
-        ListNode* curr = &dummy;
-
-        while (!pq.empty())
+            l1 -> next = mergeTwoList(l1 -> next, l2);
+            return l1;
+        }
+        else
         {
-            ListNode* node = pq.top();
-            pq.pop();
-            curr -> next = node;
-            curr = curr -> next;
-            
-            if(node -> next)
-                pq.push(node -> next);
+            l2 -> next = mergeTwoList(l1, l2 -> next);
+            return l2;
         }
 
-        return dummy.next;
+        return NULL;
+    }
+
+
+    ListNode* partitionAndMerge(int start, int end, vector<ListNode*>& lists)
+    {
+        if(start == end) return lists[start];
+
+        int mid = start + (end - start)/2;
+
+        ListNode* L1 = partitionAndMerge(start, mid, lists);
+        ListNode* L2 = partitionAndMerge(mid + 1, end, lists);
+
+        return mergeTwoList(L1, L2);
+    }
+
+    ListNode* mergeKLists(vector<ListNode*>& lists)
+    {
+        int k = lists.size();
+        if(k == 0) return NULL;
+
+        return partitionAndMerge(0, k-1, lists);
+
     }
 };
