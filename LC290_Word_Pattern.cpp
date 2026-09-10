@@ -1,27 +1,27 @@
-class Solution 
+class Solution
 {
 public:
     bool wordPattern(string pattern, string s)
-    /*{
+    {
         vector<string> words;
 
-        stringstream ss(s);
-
+        stringstream ss(s); // Tokenization
+        
         string token;
-        int countWords = 0;
+        int wordCount = 0;
 
-        while(getline(ss, token, ' '))
+        while(getline(ss, token, ' ')) // Tokenization
         {
             words.push_back(token);
-            countWords++;
+            wordCount++;
         }
 
         int n = pattern.length();
 
-        if(n != countWords) return false;
+        if(n != wordCount) return false;
 
         unordered_map<string, char> mp;
-        set<char> used;
+        unordered_set<char> used;
 
         for(int i = 0; i < n; i++)
         {
@@ -33,30 +33,31 @@ public:
                 used.insert(ch);
                 mp[word] = ch;
             }
-            else if(mp[word] != pattern[i]) return false;
+            else if(mp[word] != pattern[i])
+                return false;
         }
 
         return true;
-    }*/
+    }
 
-
+    /*
     {
         unordered_map<char, int> charToIdx;
         unordered_map<string, int> strToIdx;
 
         stringstream ss(s);
-
         string token;
-        int countTokens = 0;
 
+        int countToken = 0;
         int i = 0;
         int n = pattern.size();
 
         while(ss >> token)
         {
-            countTokens++;
+            countToken++;
 
-            if(i == n || charToIdx[pattern[i]] != strToIdx[token]) return false;
+            if(i == n || charToIdx[pattern[i]] != strToIdx[token])
+                return false;
 
             charToIdx[pattern[i]] = i + 1;
             strToIdx[token] = i + 1;
@@ -68,4 +69,5 @@ public:
 
         return true;
     }
+    */
 };
