@@ -1,0 +1,37 @@
+class Solution
+{
+public:
+    int minimumPushes(string word)
+    /*{
+        int push = 0;
+
+        for(int i = 0; i < word.size(); i++)
+        {
+            push += (i / 8) +1;
+        }
+
+        return push;
+    }*/
+
+    {
+        int result = 0;
+
+        unordered_map<int, int> mp;
+        
+        int assign_key = 2;
+        for(char& ch : word)
+        {
+            if(assign_key > 9)
+            {
+                assign_key = 2;
+            }
+            mp[assign_key]++;
+
+            result += mp[assign_key];
+
+            assign_key++;
+        }
+
+        return result;
+    }
+};
